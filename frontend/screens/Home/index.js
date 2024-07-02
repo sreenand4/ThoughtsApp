@@ -66,7 +66,7 @@ const Home = () => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {title === "Your Thoughts" && <YourThoughts userId={userId} username={username} />}
-                {title === "Near You" && <NearYou />}
+                {title === "Near You" && <NearYou userId={userId} username={username} />}
             </ScrollView>
             <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text>Go back</Text>

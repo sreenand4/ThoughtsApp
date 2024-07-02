@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#252525",
         width: "100%",
-        paddingHorizontal: 25,
+        paddingHorizontal: 17,
         paddingTop: 50
     },
     navigator: {

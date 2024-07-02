@@ -43,7 +43,7 @@ const YourThoughts = ({ userId, username }) => {
     const postThought = async () => {
         try {
             if (content) {
-                const response = await axios.post(`http://localhost:4000/endpoints/thoughts/${userId}/${encodeURIComponent(content)}/${parked}/${active}`);
+                const response = await axios.post(`http://localhost:4000/endpoints/thoughts/${userId}/${username}/${encodeURIComponent(content)}/${parked}/${active}`);
                 if (response.status === 200) {
                     Toast.show({
                         type: 'success',

@@ -1,6 +1,17 @@
 const Thought = require('../models/ThoughtModel');
 const mongoose = require('mongoose');
 
+//get all Thoughts
+const getAllThoughts = async (req, res) => {
+    try {
+        const allThoughts = await Thought.find({ active: true });
+        res.status(200).json(allThoughts);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+
 // get all active thoughts 
 const getActiveThoughts = async (req, res) => {
     const { userId, active } = req.params;
@@ -30,10 +41,11 @@ const getInactiveThoughts = async (req, res) => {
 
 // create a new thought 
 const createThought = async (req, res) => {
-    const { userId, content, parked, active } = req.params;
+    const { userId, content, username, parked, active } = req.params;
     try {
         const thought = await Thought.create({
             content: content,
+            username: username,
             authorId: userId,
             active: active,
             parked: parked,
@@ -82,4 +94,4 @@ const patchActiveStatus = async (req, res) => {
 
 
 
-module.exports = { createThought, getActiveThoughts, getInactiveThoughts, deleteThought, patchActiveStatus }
+module.exports = { createThought, getActiveThoughts, getInactiveThoughts, deleteThought, patchActiveStatus, getAllThoughts }

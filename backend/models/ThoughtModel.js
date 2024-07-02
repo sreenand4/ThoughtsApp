@@ -11,6 +11,10 @@ const ThoughtSchema = new Schema({
         type: String,
         required: true,
     },
+    username: {
+        type: String,
+        required: true
+    },
     active: {
         type: Boolean,
         required: true

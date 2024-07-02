@@ -1,10 +1,13 @@
 const express = require('express');
 const Thought = require('../models/ThoughtModel');
-const { createThought, getActiveThoughts, getInactiveThoughts, deleteThought, patchActiveStatus } = require('../controllers/thoughtControllers');
+const { createThought, getActiveThoughts, getInactiveThoughts, deleteThought, patchActiveStatus, getAllThoughts } = require('../controllers/thoughtControllers');
 const router = express.Router();
 
 // POST a new thought
-router.post('/:userId/:content/:parked/:active', createThought);
+router.post('/:userId/:username/:content/:parked/:active', createThought);
+
+// GET all thoughts
+router.get('/active', getAllThoughts);
 
 // GET all active thoughts by a specific user
 router.get('/:userId/active', getActiveThoughts);
