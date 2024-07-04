@@ -5,29 +5,30 @@ import heart from '../../assets/heartIcon.png';
 import arrowDown from '../../assets/arrowDown.png';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import * as Location from 'expo-location';
 
 
-const YourThoughts = ({ userId, username }) => {
+const YourThoughts = ({ userId, username, location }) => {
     const [activeThoughts, setActiveThoughts] = useState([]);
     const [inactiveThoughts, setInactiveThoughts] = useState([]);
+    const [activeUnparkedThoughts, setActiveUnparkedThoughts] = useState([]);
     const [content, setContent] = useState("");
     const [parked, setParked] = useState(false);
-    const [active, setActive] = useState(false);
+    const [active, setActive] = useState(true);
 
     const fetchData = async () => {
         try {
             const activeResponse = await fetch(`http://localhost:4000/endpoints/thoughts/${userId}/active`);
             const inactiveResponse = await fetch(`http://localhost:4000/endpoints/thoughts/${userId}/inactive`);
+            const activeUnparkedResponse = await fetch(`http://localhost:4000/endpoints/thoughts/${userId}/active/unparked`);
 
-            if (activeResponse.ok && inactiveResponse.ok) {
+            if (activeResponse.ok && inactiveResponse.ok && activeUnparkedResponse.ok) {
                 const activeThoughtsJson = await activeResponse.json();
                 const inactiveThoughtsJson = await inactiveResponse.json();
-
+                const activeUnparkedResponseJson = await activeUnparkedResponse.json()
                 setActiveThoughts(activeThoughtsJson);
                 setInactiveThoughts(inactiveThoughtsJson);
-
-                console.log("Active thoughts:", activeThoughtsJson);
-                console.log("Inactive thoughts:", inactiveThoughtsJson);
+                setActiveUnparkedThoughts(activeUnparkedResponseJson);
             } else {
                 console.error('Faied to fetch thoughts:', activeResponse.status, inactiveResponse.status);
             }
@@ -43,7 +44,21 @@ const YourThoughts = ({ userId, username }) => {
     const postThought = async () => {
         try {
             if (content) {
-                const response = await axios.post(`http://localhost:4000/endpoints/thoughts/${userId}/${username}/${encodeURIComponent(content)}/${parked}/${active}`);
+                let location = await Location.getCurrentPositionAsync({});
+                const coords = [location.coords.longitude, location.coords.latitude];
+                const response = await axios.post(`http://localhost:4000/endpoints/thoughts/createThought`, {
+                    userId,
+                    username,
+                    content,
+                    active,
+                    parked,
+                    location: {
+                        type: "Point",
+                        coordinates: coords,
+                    },
+                    expireAt: "04/21/2025",
+                    likeCount: 0,
+                });
                 if (response.status === 200) {
                     Toast.show({
                         type: 'success',
@@ -51,6 +66,7 @@ const YourThoughts = ({ userId, username }) => {
                     });
                     setContent("");
                     setParked(false);
+                    setActive(true);
                     fetchData();
                 } else {
                     Toast.show({
@@ -106,6 +122,28 @@ const YourThoughts = ({ userId, username }) => {
         }
     }
 
+    useEffect(() => {
+        const patchLocation = async () => {
+            try {
+                activeUnparkedThoughts.map(async (thought) => {
+                    const { _id } = thought;
+                    let currentLocation = await Location.getCurrentPositionAsync({});
+                    const coords = [currentLocation.coords.longitude, currentLocation.coords.latitude];
+                    await axios.patch(`http://localhost:4000/endpoints/thoughts/${_id}`, {
+                        newLocation: {
+                            coordinates: coords,
+                        }
+                    });
+                });
+                console.log("sucessfully updated all active unparked thoughts")
+            } catch (error) {
+                console.log('Error patching thought:', error.message)
+            }
+        }
+
+        patchLocation();
+    })
+
 
     return (
         <View style={styles.container}>
@@ -125,7 +163,7 @@ const YourThoughts = ({ userId, username }) => {
                     onChangeText={setContent} />
                 <View style={styles.inputBottomContainer}>
                     <TouchableOpacity onPress={() => setActive(!active)}>
-                        <Text style={styles.parkText}>{active ? "Post as active" : "Post as inactive"}</Text>
+                        <Text style={styles.parkText}>{active ? "Posting as active" : "Posting as inactive"}</Text>
                     </TouchableOpacity>
                     <Text style={styles.parkText}>|</Text>
                     <TouchableOpacity onPress={() => setParked(!parked)}>
@@ -154,6 +192,7 @@ const YourThoughts = ({ userId, username }) => {
                                 <Text style={styles.likeCount}>{thought.likeCount}</Text>
                             </View>
                             <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+                                {thought.parked ? (<Text style={styles.parkedText}>parked</Text>) : (<Text style={styles.createdAt}>unparked</Text>)}
                                 <Text style={styles.createdAt}>
                                     {thought.createdAt}
                                 </Text>

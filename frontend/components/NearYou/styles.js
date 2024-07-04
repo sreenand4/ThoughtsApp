@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     likeCount: {
-        color: "white"
+        color: "white",
+        paddingHorizontal: 5
     },
     createdAt: {
         color: "#ffffff8c",
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FBD157",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     inactiveHeartContainer: {
         width: 18,
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     heartIcon: {
         width: 13,
         height: 13,
-        alignSelf: "center"
+        alignSelf: "center",
     },
     postThoughtContiner: {
         display: "flex",

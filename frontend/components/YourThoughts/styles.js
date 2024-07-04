@@ -64,15 +64,20 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     likeCount: {
-        color: "white"
+        color: "white",
+        paddingHorizontal: 5
     },
     createdAt: {
         color: "#ffffff8c",
         fontSize: 8
     },
+    parkedText: {
+        color: "yellow",
+        fontSize: 8
+    },
     likeCountContainer: {
         height: 20,
-        paddingRight: 7,
+        paddingRight: 5,
         borderWidth: 1,
         backgroundColor: "#202124",
         borderRadius: 40,

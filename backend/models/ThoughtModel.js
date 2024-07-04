@@ -3,15 +3,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ThoughtSchema = new Schema({
-    content: {
-        type: String,
-        required: true
-    },
     authorId: {
         type: String,
         required: true,
     },
     username: {
+        type: String,
+        required: true
+    },
+    content: {
         type: String,
         required: true
     },
@@ -23,8 +23,9 @@ const ThoughtSchema = new Schema({
         type: Boolean,
         required: true
     },
-    coordinates: {
-        type: String
+    location: {
+        type: { type: String, enum: ['Point'], required: true },
+        coordinates: { type: [Number], required: true }, // list the longitude first, and then latitude.
     },
     expireAt: {
         type: Date,

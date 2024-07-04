@@ -1,6 +1,7 @@
+import React, { useState, useEffect } from "react"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
-import { Image } from 'react-native';
+import { View, Text, Image, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import homeIcon from "../assets/homeIcon.png";
 

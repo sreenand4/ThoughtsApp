@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, TouchableOpacity, Animated, ScrollView } from 'react-native';
-import styles from './styles'
+import styles from './styles';
 import LogoHeader from '../../components/LogoHeader';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import YourThoughts from '../../components/YourThoughts'
-import NearYou from '../../components/NearYou'
+import YourThoughts from '../../components/YourThoughts';
+import NearYou from '../../components/NearYou';
 import axios from "axios";
+import * as Location from 'expo-location';
 
 const Home = () => {
     const route = useRoute();
     const navigation = useNavigation();
+    const highlightPosition = useRef(new Animated.Value(0)).current;
     const { userId, username } = route.params;
     const [title, setTitle] = useState("Your Thoughts");
     const [titleId, setTitleId] = useState("1");
-
-    const highlightPosition = useRef(new Animated.Value(0)).current;
+    const [location, setLocation] = useState([]);
+    const [activeUnparkedThoughts, setActiveUnparkedThoughts] = useState([]);
 
     const section = [
         {
@@ -25,7 +27,7 @@ const Home = () => {
             id: "2",
             title: "Near You"
         }
-    ]
+    ];
 
     const titleIdFunc = (id, title) => {
         setTitleId(id);
@@ -34,7 +36,7 @@ const Home = () => {
             toValue: id === "1" ? 0 : 1,
             useNativeDriver: true
         }).start();
-    }
+    };
 
     const highlightStyle = {
         transform: [
@@ -45,7 +47,29 @@ const Home = () => {
                 })
             }
         ]
-    }
+    };
+
+    useEffect(() => {
+        const fetchLocation = async () => {
+            try {
+                const { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    console.log('Permission to access location was denied');
+                    return;
+                }
+                const currentLocation = await Location.getCurrentPositionAsync({});
+                setLocation([currentLocation.coords.longitude, currentLocation.coords.latitude]);
+            } catch (error) {
+                console.log(`Cannot obtain current location: ${error.message}`);
+                console.log("Location error:", error.message);
+            }
+        };
+
+        fetchLocation();
+        const locationInterval = setInterval(fetchLocation, 5 * 60 * 1000); // every 1 minutes
+
+        return () => clearInterval(locationInterval);
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -65,14 +89,14 @@ const Home = () => {
                 ))}
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
-                {title === "Your Thoughts" && <YourThoughts userId={userId} username={username} />}
-                {title === "Near You" && <NearYou userId={userId} username={username} />}
+                {title === "Your Thoughts" && <YourThoughts userId={userId} username={username} location={location} />}
+                {title === "Near You" && <NearYou userId={userId} username={username} location={location} />}
             </ScrollView>
             <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text>Go back</Text>
             </TouchableOpacity>
         </View>
     );
-}
+};
 
 export default Home;
