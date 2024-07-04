@@ -37,5 +37,6 @@ const ThoughtSchema = new Schema({
     }
 }, { timestamps: true })
 
+ThoughtSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Thought", ThoughtSchema);

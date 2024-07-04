@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
         color: "#ffffff8c",
         fontSize: 8
     },
+    parkedText: {
+        color: "yellow",
+        fontSize: 8
+    },
     likeCountContainer: {
         height: 20,
         paddingRight: 7,

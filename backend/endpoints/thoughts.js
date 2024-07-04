@@ -8,7 +8,8 @@ const {
     patchActiveStatus,
     getAllThoughts,
     getActiveUnparkedThoughts,
-    patchLocation } = require('../controllers/thoughtControllers');
+    patchLocation,
+    getAllNearbyThoughts } = require('../controllers/thoughtControllers');
 
 const router = express.Router();
 
@@ -26,6 +27,9 @@ router.get('/:userId/active/unparked', getActiveUnparkedThoughts);
 
 // GET all inactive thoughts by a specific user
 router.get('/:userId/inactive', getInactiveThoughts);
+
+// GET all Nearby thoughts give coordinates
+router.get('/nearby', getAllNearbyThoughts);
 
 // DELETE a thought by ID
 router.delete('/:thoughtId', deleteThought);

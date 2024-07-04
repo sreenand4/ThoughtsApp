@@ -16,6 +16,39 @@ const YourThoughts = ({ userId, username, location }) => {
     const [parked, setParked] = useState(false);
     const [active, setActive] = useState(true);
 
+    function timeAgo(dateString) {
+        const now = new Date();
+        const past = new Date(dateString);
+        const seconds = Math.floor((now - past) / 1000);
+
+        let interval = Math.floor(seconds / 31536000);
+        if (interval > 1) {
+            return `${interval} years ago`;
+        }
+
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) {
+            return `${interval} months ago`;
+        }
+
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) {
+            return `${interval} days ago`;
+        }
+
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) {
+            return `${interval} hours ago`;
+        }
+
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) {
+            return `${interval} minutes ago`;
+        }
+
+        return 'just now';
+    }
+
     const fetchData = async () => {
         try {
             const activeResponse = await fetch(`http://localhost:4000/endpoints/thoughts/${userId}/active`);
@@ -175,7 +208,7 @@ const YourThoughts = ({ userId, username, location }) => {
             </View>
 
             <View style={styles.thoughtsContainer}>
-                <Text style={styles.sectionTitle}>Active</Text>
+                <Text style={styles.sectionTitle}>Actively thinking</Text>
                 {activeThoughts.map(thought => (
                     <View key={thought._id} style={styles.thoughtBubble}>
                         <View style={styles.thoughtBubbleTopContainer}>
@@ -194,7 +227,7 @@ const YourThoughts = ({ userId, username, location }) => {
                             <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
                                 {thought.parked ? (<Text style={styles.parkedText}>parked</Text>) : (<Text style={styles.createdAt}>unparked</Text>)}
                                 <Text style={styles.createdAt}>
-                                    {thought.createdAt}
+                                    {timeAgo(thought.createdAt)}
                                 </Text>
                                 <TouchableOpacity onPress={() => deleteThought(thought._id)}>
                                     <Text style={styles.delete}>Delete</Text>
@@ -205,7 +238,7 @@ const YourThoughts = ({ userId, username, location }) => {
                 ))}
             </View>
             <View style={styles.thoughtsContainer}>
-                <Text style={styles.sectionTitle}>Inactive</Text>
+                <Text style={styles.sectionTitle}>In memmory</Text>
                 {inactiveThoughts.map(thought => (
                     <View key={thought._id} style={styles.thoughtBubble}>
                         <View style={styles.thoughtBubbleTopContainer}>
@@ -222,8 +255,9 @@ const YourThoughts = ({ userId, username, location }) => {
                                 <Text style={styles.likeCount}>{thought.likeCount}</Text>
                             </View>
                             <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+                                {thought.parked ? (<Text style={styles.createdAt}>parked</Text>) : (<Text style={styles.createdAt}>unparked</Text>)}
                                 <Text style={styles.createdAt}>
-                                    {thought.createdAt}
+                                    {timeAgo(thought.createdAt)}
                                 </Text>
                                 <TouchableOpacity onPress={() => deleteThought(thought._id)}>
                                     <Text style={styles.delete}>Delete</Text>

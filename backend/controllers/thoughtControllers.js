@@ -60,6 +60,31 @@ const getInactiveThoughts = async (req, res) => {
     }
 }
 
+// GET all nearby thoughts given coordinates
+const getAllNearbyThoughts = async (req, res) => {
+    const { longitude, latitude } = req.query;
+    if (!longitude || !latitude) {
+        return res.status(400).send({ error: 'Longitude and latitude are required' });
+    }
+    try {
+        const thoughts = await Thought.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                    },
+                    $maxDistance: 10 // 10 meters
+                }
+            }
+        });
+
+        res.send(thoughts);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+}
+
 // create a new thought 
 const createThought = async (req, res) => {
     const { userId, username, content, active, parked, location, expireAt, likeCount } = req.body;
@@ -147,5 +172,6 @@ module.exports = {
     patchActiveStatus,
     getAllThoughts,
     getActiveUnparkedThoughts,
-    patchLocation
+    patchLocation,
+    getAllNearbyThoughts
 }
