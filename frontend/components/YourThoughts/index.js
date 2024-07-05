@@ -238,7 +238,7 @@ const YourThoughts = ({ userId, username, location }) => {
                 ))}
             </View>
             <View style={styles.thoughtsContainer}>
-                <Text style={styles.sectionTitle}>In memmory</Text>
+                <Text style={styles.sectionTitle}>In memory</Text>
                 {inactiveThoughts.map(thought => (
                     <View key={thought._id} style={styles.thoughtBubble}>
                         <View style={styles.thoughtBubbleTopContainer}>
