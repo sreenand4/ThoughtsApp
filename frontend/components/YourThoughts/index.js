@@ -72,7 +72,7 @@ const YourThoughts = ({ userId, username, location }) => {
 
     useEffect(() => {
         fetchData();
-    }, [userId]);
+    }, []);
 
     const postThought = async () => {
         try {
@@ -158,7 +158,7 @@ const YourThoughts = ({ userId, username, location }) => {
     useEffect(() => {
         const patchLocation = async () => {
             try {
-                activeUnparkedThoughts.map(async (thought) => {
+                await Promise.all(activeUnparkedThoughts.map(async (thought) => {
                     const { _id } = thought;
                     let currentLocation = await Location.getCurrentPositionAsync({});
                     const coords = [currentLocation.coords.longitude, currentLocation.coords.latitude];
@@ -167,15 +167,18 @@ const YourThoughts = ({ userId, username, location }) => {
                             coordinates: coords,
                         }
                     });
-                });
-                console.log("sucessfully updated all active unparked thoughts")
+                }));
+                console.log("Successfully updated all active unparked thoughts");
             } catch (error) {
-                console.log('Error patching thought:', error.message)
+                console.log('Error patching thought:', error.message);
             }
-        }
+        };
 
-        patchLocation();
-    })
+        if (activeUnparkedThoughts.length > 0) {
+            patchLocation();
+        }
+    }, [activeUnparkedThoughts]);
+
 
 
     return (
@@ -267,6 +270,7 @@ const YourThoughts = ({ userId, username, location }) => {
                     </View>
                 ))}
             </View>
+            <Text style={{ color: "white" }}>location: {location[0]}, {location[1]}</Text>
         </View>
     );
 }

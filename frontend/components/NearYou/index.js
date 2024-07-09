@@ -41,7 +41,7 @@ const NearYou = ({ location }) => {
     }
 
     useEffect(() => {
-        const fetchNearbyThoughts = async () => {
+        const fetchThoughts = async () => {
             try {
                 const response = await axios.get(`http://localhost:4000/endpoints/thoughts/nearby`, {
                     params: {
@@ -49,14 +49,19 @@ const NearYou = ({ location }) => {
                         latitude: location[1]
                     }
                 });
-                setNearbyThoughts(response.data);
+                console.log('Full response:', response);
+                if (Array.isArray(response.data)) {
+                    setNearbyThoughts(response.data);
+                } else {
+                    console.error('Unexpected data format:', response.data);
+                }
             } catch (error) {
                 console.error('Error fetching nearby thoughts:', error.message);
             }
         };
 
         if (location.length > 0) {
-            fetchNearbyThoughts();
+            fetchThoughts();
         }
     }, []);
 
@@ -92,6 +97,7 @@ const NearYou = ({ location }) => {
                     </View>
                 </>
             )}
+            <Text style={{ color: "white" }}>location: {location[0]}, {location[1]}</Text>
         </View>
     );
 };

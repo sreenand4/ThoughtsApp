@@ -9,7 +9,8 @@ const {
     getAllThoughts,
     getActiveUnparkedThoughts,
     patchLocation,
-    getAllNearbyThoughts } = require('../controllers/thoughtControllers');
+    getAllNearbyThoughts,
+    test } = require('../controllers/thoughtControllers');
 
 const router = express.Router();
 
@@ -39,5 +40,8 @@ router.patch('/:thoughtId/:desiredStatus', patchActiveStatus);
 
 // PATCH the location of a thought with user's current location 
 router.patch('/:thoughtId', patchLocation)
+
+// test
+router.get('/test', test)
 
 module.exports = router;

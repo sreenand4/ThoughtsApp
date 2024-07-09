@@ -69,7 +69,7 @@ const Home = () => {
         const locationInterval = setInterval(fetchLocation, 5 * 60 * 1000); // every 1 minutes
 
         return () => clearInterval(locationInterval);
-    }, []);
+    }, [location]);
 
     return (
         <View style={styles.container}>

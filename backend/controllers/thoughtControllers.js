@@ -76,7 +76,8 @@ const getAllNearbyThoughts = async (req, res) => {
                     },
                     $maxDistance: 10 // 10 meters
                 }
-            }
+            },
+            active: true,
         });
 
         res.send(thoughts);
@@ -147,7 +148,7 @@ const patchLocation = async (req, res) => {
     try {
         const patchedThought = await Thought.findOneAndUpdate(
             { _id: thoughtId },
-            { location: newLocation },
+            { location: { type: 'Point', coordinates: newLocation.coordinates } },
             { new: true }
         );
 
@@ -162,6 +163,11 @@ const patchLocation = async (req, res) => {
 };
 
 
+const test = async (req, res) => {
+    res.send({ "message": "hello world" })
+}
+
+
 
 
 module.exports = {
@@ -173,5 +179,6 @@ module.exports = {
     getAllThoughts,
     getActiveUnparkedThoughts,
     patchLocation,
-    getAllNearbyThoughts
+    getAllNearbyThoughts,
+    test
 }

@@ -15,6 +15,7 @@ const Signin = () => {
             try {
                 const response = await axios.get(`http://localhost:4000/endpoints/users/${username}`);
                 setError(false);
+                console.log(response);
                 const userId = response.data.userId;
                 navigation.navigate('Main', { userId, username });
             } catch (err) {
