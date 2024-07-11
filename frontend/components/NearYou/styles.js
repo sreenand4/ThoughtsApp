@@ -9,10 +9,10 @@ const styles = StyleSheet.create({
         color: "white"
     },
     thoughtsContainer: {
-        backgroundColor: "#211F1F",
+        // backgroundColor: "#211F1F",
         paddingHorizontal: 18,
         paddingTop: 15,
-        paddingBottom: 20,
+        paddingBottom: 10,
         width: "100%",
         borderRadius: 16,
         display: "flex",

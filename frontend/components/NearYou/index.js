@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import heart from '../../assets/heartIcon.png';
 import axios from "axios";
 import styles from "./styles";
 
-const NearYou = ({ location }) => {
+const NearYou = ({ location, userId, username }) => {
     const [nearbyThoughts, setNearbyThoughts] = useState([]);
+    const navigation = useNavigation();
 
     function timeAgo(dateString) {
         const now = new Date();
@@ -65,6 +67,10 @@ const NearYou = ({ location }) => {
         }
     }, []);
 
+    const toThoughtForum = (thought) => {
+        navigation.navigate("ThoughtForum", { thought, userId, username })
+    }
+
     return (
         <View style={styles.container}>
             {location.length === 0 ? (
@@ -73,7 +79,7 @@ const NearYou = ({ location }) => {
                 <>
                     <View style={styles.thoughtsContainer}>
                         {nearbyThoughts.map(thought => (
-                            <View key={thought._id} style={styles.thoughtBubble}>
+                            <TouchableOpacity key={thought._id} style={styles.thoughtBubble} onPress={() => toThoughtForum(thought)}>
                                 <View style={styles.thoughtBubbleTopContainer}>
                                     <Text style={styles.username}>{thought.username}</Text>
                                     <Text style={styles.thoughtText}>{thought.content}</Text>
@@ -92,7 +98,7 @@ const NearYou = ({ location }) => {
                                         </Text>
                                     </View>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         ))}
                     </View>
                 </>

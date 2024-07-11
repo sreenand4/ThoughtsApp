@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const thoughtsEndpoints = require('./endpoints/thoughts');
 const usersEndpoints = require('./endpoints/users');
+const commentsEndpoints = require('./endpoints/comments')
 
 // create server
 const server = express();
@@ -19,6 +20,7 @@ server.use((req, res, next) => {
 // expose endpoints
 server.use('/endpoints/thoughts', thoughtsEndpoints);
 server.use('/endpoints/users', usersEndpoints);
+server.use('./endpoints/comments', commentsEndpoints);
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI).then(() => {

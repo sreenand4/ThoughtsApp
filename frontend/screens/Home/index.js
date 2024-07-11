@@ -7,6 +7,7 @@ import YourThoughts from '../../components/YourThoughts';
 import NearYou from '../../components/NearYou';
 import axios from "axios";
 import * as Location from 'expo-location';
+import { RefreshControl } from "react-native";
 
 const Home = () => {
     const route = useRoute();
@@ -16,7 +17,7 @@ const Home = () => {
     const [title, setTitle] = useState("Your Thoughts");
     const [titleId, setTitleId] = useState("1");
     const [location, setLocation] = useState([]);
-    const [activeUnparkedThoughts, setActiveUnparkedThoughts] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     const section = [
         {
@@ -49,27 +50,31 @@ const Home = () => {
         ]
     };
 
-    useEffect(() => {
-        const fetchLocation = async () => {
-            try {
-                const { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    console.log('Permission to access location was denied');
-                    return;
-                }
-                const currentLocation = await Location.getCurrentPositionAsync({});
-                setLocation([currentLocation.coords.longitude, currentLocation.coords.latitude]);
-            } catch (error) {
-                console.log(`Cannot obtain current location: ${error.message}`);
-                console.log("Location error:", error.message);
+    const fetchLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
             }
-        };
+            const currentLocation = await Location.getCurrentPositionAsync({});
+            setLocation([currentLocation.coords.longitude, currentLocation.coords.latitude]);
+            console.log("location refreshed")
+        } catch (error) {
+            console.log(`Cannot obtain current location: ${error.message}`);
+            console.log("Location error:", error.message);
+        }
+    };
 
+    const onRefresh = async () => {
+        setRefreshing(true);
         fetchLocation();
-        const locationInterval = setInterval(fetchLocation, 5 * 60 * 1000); // every 1 minutes
+        setRefreshing(false);
+    };
 
-        return () => clearInterval(locationInterval);
-    }, [location]);
+    useEffect(() => {
+        fetchLocation();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -88,7 +93,9 @@ const Home = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} showVerticalScrollIndicator={false} refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
                 {title === "Your Thoughts" && <YourThoughts userId={userId} username={username} location={location} />}
                 {title === "Near You" && <NearYou userId={userId} username={username} location={location} />}
             </ScrollView>
