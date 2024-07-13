@@ -12,9 +12,9 @@ const CommentSchema = new Schema({
     },
     parentThoughtId: {
         type: String,
-        required: true
+        default: null
     },
-    parentId: {
+    parentCommentId: {
         type: String,
         default: null
     },

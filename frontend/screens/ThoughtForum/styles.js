@@ -35,10 +35,13 @@ const styles = StyleSheet.create({
     },
     commentInput: {
         color: "white",
-        fontSize: 12
+        fontSize: 12,
+        marginBottom: 10
     },
     commentContainer: {
-        marginBottom: 18
+        marginBottom: 18,
+        borderBottomWidth: 1,
+        borderBottomColor: "white"
     },
     commentsContainer: {
         paddingHorizontal: 18,
@@ -46,7 +49,8 @@ const styles = StyleSheet.create({
     commentsTitle: {
         fontSize: 20,
         marginTop: 16,
-        color: "white"
+        color: "white",
+        marginBottom: 20,
     },
     commentsSection: {
         marginTop: 14
